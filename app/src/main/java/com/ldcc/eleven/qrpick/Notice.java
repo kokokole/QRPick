@@ -21,4 +21,14 @@ public class Notice {
      *
      * RecyclerView, Retrofit, okhttp, gson 등 일단 추가해둠 (다른거 쓰셔도 됨)
      */
+
+
+    /**
+     * 19/01/27  01:30
+     *  두 가지 QR 라이브러리를 추가하고 확인함
+     *  CustomerActivity에서는 firebase QR인식을 이용
+     *  ManagerActivity에서는 다른 라이브러리를 이용
+     *  firebase QR인식이 더 좋은거 같음
+     *
+     */
 }

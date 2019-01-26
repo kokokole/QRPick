@@ -6,10 +6,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".activities.customer.CustomerActivity">
+    <com.ldcc.eleven.qrpick.qr.common.CameraSourcePreview
+            android:id="@+id/firePreview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-    <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" tools:srcCompat="@tools:sample/avatars" android:id="@+id/imageView"
-            android:contentDescription="TODO" android:src="@drawable/ic_launcher_background" app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+        <com.ldcc.eleven.qrpick.qr.common.GraphicOverlay
+                android:id="@+id/fireFaceOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"/>
+    </com.ldcc.eleven.qrpick.qr.common.CameraSourcePreview>
+
 </android.support.constraint.ConstraintLayout>
