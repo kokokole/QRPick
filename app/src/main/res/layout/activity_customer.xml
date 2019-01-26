@@ -10,6 +10,6 @@
     <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" tools:srcCompat="@tools:sample/avatars" android:id="@+id/imageView"
-            android:src="@drawable/ic_launcher_background" app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="TODO" android:src="@drawable/ic_launcher_background" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 </android.support.constraint.ConstraintLayout>
