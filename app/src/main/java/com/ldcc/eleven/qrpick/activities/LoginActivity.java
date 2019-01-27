@@ -23,11 +23,12 @@ public class LoginActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //관리자 계정이면 flag 0, 일반 계정이면 flag 1
                 if(id.getText().toString().equals("")){
-                    startActivity(new Intent(getApplicationContext(), ManagerActivity.class));
+                    startActivity(new Intent(getApplicationContext(), ManagerActivity.class).putExtra("flag",0));
                 }
                 else{
-                    startActivity(new Intent(getApplicationContext(), CustomerActivity.class));
+                    startActivity(new Intent(getApplicationContext(), CustomerActivity.class).putExtra("flag",1));
                 }
             }
         });

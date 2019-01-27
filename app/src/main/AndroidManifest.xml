@@ -5,13 +5,12 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.READ_PROFILE"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
-
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
 
     <application
             android:allowBackup="true"
@@ -20,11 +19,9 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".activities.manager.ManagerActivity"
-                  android:screenOrientation="fullSensor"
-                  android:stateNotNeeded="true"
-                  android:theme="@style/zxing_CaptureTheme"
-                  android:windowSoftInputMode="stateAlwaysHidden">
+        <activity android:name=".activities.manager.MenuActivity">
+        </activity>
+        <activity android:name=".activities.manager.ManagerActivity">
         </activity>
         <activity android:name=".activities.customer.CustomerActivity">
         </activity>
@@ -36,13 +33,9 @@
             </intent-filter>
         </activity>
 
-
-
-
         <meta-data
                 android:name="com.google.firebase.ml.vision.DEPENDENCIES"
-                android:value="barcode" />
-        <!-- To use multiple models: android:value="barcode,model2,model3" -->
+                android:value="barcode"/>
     </application>
 
 </manifest>

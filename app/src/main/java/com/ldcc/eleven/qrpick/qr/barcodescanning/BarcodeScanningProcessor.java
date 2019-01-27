@@ -13,6 +13,8 @@
 // limitations under the License.
 package com.ldcc.eleven.qrpick.qr.barcodescanning;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +26,10 @@ import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetector;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetectorOptions;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+
+
+import com.ldcc.eleven.qrpick.activities.dataSetListener;
+import com.ldcc.eleven.qrpick.activities.manager.MenuActivity;
 import com.ldcc.eleven.qrpick.qr.common.CameraImageGraphic;
 import com.ldcc.eleven.qrpick.qr.common.FrameMetadata;
 import com.ldcc.eleven.qrpick.qr.common.GraphicOverlay;
@@ -42,12 +48,25 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
 
     private final FirebaseVisionBarcodeDetector detector;
 
-    public BarcodeScanningProcessor() {
+    private int state = -1; // 관리자인지 아닌지 확인하는 flag변수
+    // 관리자 계정이면 flag 0, 아니면 1
+
+    private dataSetListener dsl;
+
+    /**
+     * 바코드(QR코드) 감지 객체 생성
+     */
+    public BarcodeScanningProcessor(int state, dataSetListener dsl) {
         // Note that if you know which format of barcode your app is dealing with, detection will be
         // faster to specify the supported barcode formats one by one, e.g.
         // new FirebaseVisionBarcodeDetectorOptions.Builder()
         //     .setBarcodeFormats(FirebaseVisionBarcode.FORMAT_QR_CODE)
         //     .build();
+
+
+        this.state = state;
+        this.dsl = dsl;
+
 
         FirebaseVisionBarcodeDetectorOptions options =
                 new FirebaseVisionBarcodeDetectorOptions.Builder()
@@ -81,6 +100,13 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
         return detector.detectInImage(image);
     }
 
+    /**
+     * 감지 성공시 콜백
+     * @param originalCameraImage hold the original image from camera, used to draw the background
+     * @param barcodes
+     * @param frameMetadata
+     * @param graphicOverlay
+     */
     @Override
     protected void onSuccess(
             @Nullable Bitmap originalCameraImage,
@@ -88,17 +114,26 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
             @NonNull FrameMetadata frameMetadata,
             @NonNull GraphicOverlay graphicOverlay) {
         graphicOverlay.clear();
+
         if (originalCameraImage != null) {
             CameraImageGraphic imageGraphic = new CameraImageGraphic(graphicOverlay, originalCameraImage);
             graphicOverlay.add(imageGraphic);
         }
-        for (int i = 0; i < barcodes.size(); ++i) {
-            FirebaseVisionBarcode barcode = barcodes.get(i);
-            BarcodeGraphic barcodeGraphic = new BarcodeGraphic(graphicOverlay, barcode);
-            graphicOverlay.add(barcodeGraphic);
-            Log.d("code read", barcode.getValueType()+" /// "+barcode.getUrl() );
+
+
+        // 코드 데이터 읽기
+//        for (int i = 0; i < barcodes.size(); ++i) {
+        if(barcodes.size() > 0) {
+            FirebaseVisionBarcode barcode = barcodes.get(0);
+            // BarcodeGraphic barcodeGraphic = new BarcodeGraphic(graphicOverlay, barcode);
+            // graphicOverlay.add(barcodeGraphic);  // 코드를 읽으면 그 내용을 화면에 추가
+            Log.d("code read", barcode.getValueType() + " /// " + barcode.getRawValue());  // 코드 읽기
+
+            dsl.setData(barcode.getRawValue());
         }
-        graphicOverlay.postInvalidate();  //바코드 읽으면 화면에 보여줌
+
+//        }
+       // graphicOverlay.postInvalidate();  // 코드를 읽으면 그 내용을 화면에 보여줌
     }
 
     @Override

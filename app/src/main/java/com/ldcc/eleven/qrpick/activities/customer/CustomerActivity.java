@@ -2,6 +2,7 @@ package com.ldcc.eleven.qrpick.activities.customer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.hardware.camera2.CameraAccessException;
@@ -28,6 +29,8 @@ import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetectorOption
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
 import com.ldcc.eleven.qrpick.R;
+import com.ldcc.eleven.qrpick.activities.dataSetListener;
+import com.ldcc.eleven.qrpick.activities.manager.MenuActivity;
 import com.ldcc.eleven.qrpick.qr.common.CameraSource;
 import com.ldcc.eleven.qrpick.qr.common.CameraSourcePreview;
 import com.ldcc.eleven.qrpick.qr.common.GraphicOverlay;
@@ -37,10 +40,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerActivity extends AppCompatActivity {
+public class CustomerActivity extends AppCompatActivity implements dataSetListener {
     private static final String TAG = "CustomActivity";
     private static final String FACE_CONTOUR = "Face Contour";
     private static final int PERMISSION_REQUESTS = 1;
+
+    private CameraSource cameraSource = null;
+    private CameraSourcePreview preview;
+    private GraphicOverlay graphicOverlay;
+    private String selectedModel = FACE_CONTOUR;
+    private String qrData = null;
+
+
 
     @Override
     protected void onResume() {
@@ -65,10 +76,7 @@ public class CustomerActivity extends AppCompatActivity {
     }
 
 
-    private CameraSource cameraSource = null;
-    private CameraSourcePreview preview;
-    private GraphicOverlay graphicOverlay;
-    private String selectedModel = FACE_CONTOUR;
+
 
     /**
      * Starts or restarts the camera source, if it exists. If the camera source doesn't exist yet
@@ -167,11 +175,15 @@ public class CustomerActivity extends AppCompatActivity {
 
 
         Log.i(TAG, "Using Barcode Detector Processor");
-        cameraSource.setMachineLearningFrameProcessor(new BarcodeScanningProcessor());
+        cameraSource.setMachineLearningFrameProcessor(new BarcodeScanningProcessor(1, this));  // QR코드를 읽기 시작함
 
     }
 
-
+    @Override
+    public void setData(String data) {
+        qrData = data;
+        startActivity(new Intent(getApplicationContext(), MenuActivity.class).putExtra("data", qrData));
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

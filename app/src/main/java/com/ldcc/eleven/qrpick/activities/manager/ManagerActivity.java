@@ -14,21 +14,73 @@ import android.util.Log;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ldcc.eleven.qrpick.R;
+import com.ldcc.eleven.qrpick.activities.dataSetListener;
+import com.ldcc.eleven.qrpick.qr.barcodescanning.BarcodeScanningProcessor;
+import com.ldcc.eleven.qrpick.qr.common.CameraSource;
+import com.ldcc.eleven.qrpick.qr.common.CameraSourcePreview;
+import com.ldcc.eleven.qrpick.qr.common.GraphicOverlay;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ManagerActivity extends Activity {
+public class ManagerActivity extends AppCompatActivity implements dataSetListener {
     private static final String TAG = "ManagerActivity";
+    private static final String FACE_CONTOUR = "Face Contour";
     private static final int PERMISSION_REQUESTS = 1;
 
 
-    /**
-     * CustomerActivity에는 파이어베이스 QR인식 라이브러리를
-     * 여기엔 zxing 라는 QR인식 라이브러리를 썼는데 별로인거 같음
-     * 파이어베이스 라이브러리가 더 좋은거 같음...
-     */
+    private CameraSource cameraSource = null;
+    private CameraSourcePreview preview;
+    private GraphicOverlay graphicOverlay;
+    private String selectedModel = FACE_CONTOUR;
+    private String qrData = null;
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+        startCameraSource();
+    }
+
+    /**
+     * Stops the camera.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "pause");
+        preview.stop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (cameraSource != null) {
+            cameraSource.release();
+        }
+        Log.d(TAG, "destroy");
+    }
+
+
+    private void startCameraSource() {
+        if (cameraSource != null) {
+            try {
+                if (preview == null) {
+                    Log.d(TAG, "resume: Preview is null");
+                }
+                if (graphicOverlay == null) {
+                    Log.d(TAG, "resume: graphOverlay is null");
+                }
+                preview.start(cameraSource, graphicOverlay);
+            } catch (IOException e) {
+                Log.e(TAG, "Unable to start camera source.", e);
+                cameraSource.release();
+                cameraSource = null;
+            }
+        }
+    }
 
     // 권한 체크
     private boolean allPermissionsGranted() {
@@ -96,33 +148,51 @@ public class ManagerActivity extends Activity {
     //권한체크 끝
 
 
+    private void createCameraSource(String model) {
+        // If there's no existing cameraSource, create one.
+        if (cameraSource == null) {
+            cameraSource = new CameraSource(this, graphicOverlay);
+        }
+
+
+        Log.i(TAG, "Using Barcode Detector Processor");
+        cameraSource.setMachineLearningFrameProcessor(new BarcodeScanningProcessor(0, this));
+        Log.d(TAG,"endendend");
+
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manager);
 
 
-        if (allPermissionsGranted()) {
-            new IntentIntegrator(ManagerActivity.this).initiateScan();
+        preview = (CameraSourcePreview) findViewById(R.id.firePreview);
 
+        if (preview == null) {
+            Log.d(TAG, "Preview is null");
+        }
+        graphicOverlay = (GraphicOverlay) findViewById(R.id.fireFaceOverlay);
+        if (graphicOverlay == null) {
+            Log.d(TAG, "graphicOverlay is null");
+        }
+
+
+        if (allPermissionsGranted()) {
+            createCameraSource(selectedModel);
         } else {
             getRuntimePermissions();
         }
 
+
+
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // QR코드/ 바코드를 스캔한 결과
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        // result.getFormatName() : 바코드 종류
-        // result.getContents() : 바코드 값
-        if(result.getContents() != null)
-            Log.d( TAG, result.getContents() );
-
+    public void setData(String data) {
+        qrData = data;
+        startActivity(new Intent(getApplicationContext(), MenuActivity.class).putExtra("data", qrData));
     }
-
 }
