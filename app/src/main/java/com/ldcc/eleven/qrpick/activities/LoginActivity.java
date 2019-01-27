@@ -16,22 +16,22 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_login2);
 
-        id = findViewById(R.id.id);
-        Button button = findViewById(R.id.sign_in_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //관리자 계정이면 flag 0, 일반 계정이면 flag 1
-                if(id.getText().toString().equals("")){
-                    startActivity(new Intent(getApplicationContext(), ManagerActivity.class).putExtra("flag",0));
-                }
-                else{
-                    startActivity(new Intent(getApplicationContext(), CustomerActivity.class).putExtra("flag",1));
-                }
-            }
-        });
+//        id = findViewById(R.id.id);
+//        Button button = findViewById(R.id.sign_in_button);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //관리자 계정이면 flag 0, 일반 계정이면 flag 1
+//                if(id.getText().toString().equals("")){
+//                    startActivity(new Intent(getApplicationContext(), ManagerActivity.class).putExtra("flag",0));
+//                }
+//                else{
+//                    startActivity(new Intent(getApplicationContext(), CustomerActivity.class).putExtra("flag",1));
+//                }
+//            }
+//        });
 
     }
 }
