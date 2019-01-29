@@ -14,7 +14,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Api api = new Api(this);
         Log.d("MainActivity", "DDDDDD");
-        api.getDisplay("1");
+        api.getDisplayList("1");
+        api.getDetailDisplay("1");
+
 
     }
 }
