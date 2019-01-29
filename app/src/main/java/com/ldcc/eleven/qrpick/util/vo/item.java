@@ -1,8 +1,14 @@
 package com.ldcc.eleven.qrpick.util.vo;
 
+import java.util.List;
+
 public class Item {
-    private String modelNumber, category, name, information;
-    private int price, discountPrice, brand;
+    private String modelNumber, category, name;
+    private int price, discountPrice, amount, brandId, id;
+//    private List<information> information;
+private String information;
+
+    private String imagePath, ImageUrl, createdAt, updatedAt;
 
     public String getModelNumber() {
         return modelNumber;
@@ -28,14 +34,6 @@ public class Item {
         this.name = name;
     }
 
-    public String getInformation() {
-        return information;
-    }
-
-    public void setInformation(String information) {
-        this.information = information;
-    }
-
     public int getPrice() {
         return price;
     }
@@ -52,12 +50,68 @@ public class Item {
         this.discountPrice = discountPrice;
     }
 
-    public int getBrand() {
-        return brand;
+    public int getAmount() {
+        return amount;
     }
 
-    public void setBrand(int brand) {
-        this.brand = brand;
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    public int getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(int brandId) {
+        this.brandId = brandId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getInformation() {
+        return information;
+    }
+
+    public void setInformation(String information) {
+        this.information = information;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getImageUrl() {
+        return ImageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        ImageUrl = imageUrl;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
 
