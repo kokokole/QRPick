@@ -142,7 +142,7 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
             @Override
             public void onClick(View view) {
                 /**페이지 작성되면 수정*/
-                startActivity(new Intent(getApplicationContext(), ManagerActivity.class));
+                startActivity(new Intent(getApplicationContext(), ManagerActivity.class).putExtra("go", 1));
             }
         });
     }
@@ -154,9 +154,9 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
 
         Item item = (Item) myAdapter.getItem(position);
         Toast.makeText(this, position+" 클릭됨", Toast.LENGTH_SHORT).show();
-        Gson gson = new Gson();
-        String json = gson.toJson(item);
-        startActivity(new Intent(getApplicationContext(), ItemViewActivity.class).putExtra("data", json));
+//        Gson gson = new Gson();
+//        String json = gson.toJson(item);
+//        startActivity(new Intent(getApplicationContext(), ItemViewActivity.class).putExtra("data", json));
     }
 
 

@@ -11,7 +11,6 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.ldcc.eleven.qrpick.R;
 import com.ldcc.eleven.qrpick.util.vo.DetailItem;
-import com.ldcc.eleven.qrpick.util.vo.ListItem;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -283,8 +282,6 @@ public class Api {
                     public void onResponse(String response) {
                         Log.d("result", "[" + response + "]");
                         result = response;
-
-
                     }
                 },
                 // 에러 발생 시
@@ -370,15 +367,35 @@ public class Api {
                         Log.d("result", "[" + response + "]");
                         result = response;
 
-
+                        // TODO 상품 상세정보 보여주기
+                        // 상품 id를 가지고 상품정보를 읽어온다.
                         /**
                          * Json 파싱
                          */
                         Gson gson = new Gson();
                         DetailItem item = gson.fromJson(result, DetailItem.class);
-                        TextView textView =  ((Activity)context).findViewById(R.id.text);
-                        textView.setText(item.getData().getName());
+                        TextView textView1 =  ((Activity)context).findViewById(R.id.textView7);
+                        textView1.setText(item.getData().getName());
+
                         Log.d(TAG, item.getCode());
+
+                        TextView textView2 =  ((Activity)context).findViewById(R.id.textView3);
+                        textView2.setText(item.getData().getModelNumber());
+
+                        TextView textView3 =  ((Activity)context).findViewById(R.id.textView8);
+                        textView3.setText(item.getData().getPrice()+"");
+
+                        TextView textView4 =  ((Activity)context).findViewById(R.id.textView9);
+                        textView4.setText(item.getData().getCategory());
+
+                        TextView textView5 =  ((Activity)context).findViewById(R.id.textView4);
+                        textView5.setText(item.getData().getInformation());
+
+                        TextView textView6 =  ((Activity)context).findViewById(R.id.textView6);
+                        textView6.setText(item.getData().getAmount()+"");
+
+
+
 
                     }
                 },

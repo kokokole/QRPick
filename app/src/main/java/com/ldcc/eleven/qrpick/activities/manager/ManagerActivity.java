@@ -11,16 +11,23 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import com.android.volley.*;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 import com.ldcc.eleven.qrpick.R;
 import com.ldcc.eleven.qrpick.activities.dataSetListener;
 import com.ldcc.eleven.qrpick.qr.barcodescanning.BarcodeScanningProcessor;
 import com.ldcc.eleven.qrpick.qr.common.CameraSource;
 import com.ldcc.eleven.qrpick.qr.common.CameraSourcePreview;
 import com.ldcc.eleven.qrpick.qr.common.GraphicOverlay;
+import com.ldcc.eleven.qrpick.util.vo.Qr;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ManagerActivity extends AppCompatActivity implements dataSetListener {
     private static final String TAG = "ManagerActivity";
@@ -162,11 +169,15 @@ public class ManagerActivity extends AppCompatActivity implements dataSetListene
     }
 
 
-
+    int go;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manager);
+
+        Intent intent = getIntent();
+
+        go = intent.getIntExtra("go", 0);
 
 
         preview = (CameraSourcePreview) findViewById(R.id.firePreview);
@@ -189,10 +200,46 @@ public class ManagerActivity extends AppCompatActivity implements dataSetListene
 
 
     }
-
+    String result;
     @Override
     public void setData(String data) {
         qrData = data;
-        startActivity(new Intent(getApplicationContext(), MnglistActivity.class).putExtra("data", qrData));
+        if(go == 0)
+            startActivity(new Intent(getApplicationContext(), MnglistActivity.class).putExtra("data", qrData));
+        else{  // 등록버튼을 눌렀을 때
+            Gson gson = new Gson();
+            final Qr qr = gson.fromJson(qrData, Qr.class);
+
+
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+            StringRequest request = new StringRequest(Request.Method.POST, "http://18.223.57.133:3000"+"/item/delete",
+                    //요청 성공 시
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d("result", "[" + response + "]");
+                            result = response;
+                        }
+                    },
+                    // 에러 발생 시
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d("error", "[" + error.getMessage() + "]");
+                        }
+                    }) {
+
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("id", qr.getId());
+                    return params;
+                }
+            };
+
+            queue.add(request);
+            startActivity(new Intent(getApplicationContext(), MenudetailActivity.class).putExtra("data", result));
+        }
     }
 }

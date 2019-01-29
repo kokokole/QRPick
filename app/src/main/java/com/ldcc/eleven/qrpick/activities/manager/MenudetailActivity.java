@@ -97,7 +97,7 @@ public class MenudetailActivity extends AppCompatActivity {
             selectItem(itemid);
         }
 
-        insertbtn.setOnClickListener(new View.OnClickListener() {
+        insertbtn.setOnClickListener(new View.OnClickListener() { // TODO  상품 정보 업데이트
             @Override
             public void onClick(View view) {
                 Toast.makeText(getApplicationContext(), "ddddd", Toast.LENGTH_SHORT).show();
