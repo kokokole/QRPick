@@ -167,12 +167,219 @@ public class Api {
 
 
     //할인가, brandId, amount, information, image
-    public void createItem(String modelNumber, String category, int price, String name, int discountPrice, int amount, String information, int brandId, String imageUrl) {
+    public void createItem(final String modelNumber, final String category, final String price, final String name, final String discountPrice, final String amount, final String information, final String brandId, final String imageUrl) {
+        RequestQueue queue = Volley.newRequestQueue(context);
 
+        StringRequest request = new StringRequest(Request.Method.POST, url+"/item/create",
+                //요청 성공 시
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("result", "[" + response + "]");
+                        result = response;
+                    }
+                },
+                // 에러 발생 시
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("error", "[" + error.getMessage() + "]");
+                    }
+                }) {
+            //요청보낼 때 추가로 파라미터가 필요할 경우
+            //url?a=xxx 이런식으로 보내는 대신에 아래처럼 가능.
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("modelNumber", modelNumber);
+                params.put("price", price);
+                params.put("name", name);
+                params.put("discountPrice", discountPrice);
+                params.put("amount", amount);
+                params.put("information", information);
+                params.put("brandId", brandId);
+                params.put("imageUrl", imageUrl);
+
+
+                return params;
+            }
+        };
+
+        queue.add(request);
     }
 
-    public List<Item> getListItem(int brandId) {
-        return null;
+    public String getListItem(final int brandId) {
+
+        result = "";
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        StringRequest request = new StringRequest(Request.Method.POST, url+"/item/list",
+                //요청 성공 시
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("result", "[" + response + "]");
+                        result = response;
+                    }
+                },
+                // 에러 발생 시
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("error", "[" + error.getMessage() + "]");
+                    }
+                }) {
+            //요청보낼 때 추가로 파라미터가 필요할 경우
+            //url?a=xxx 이런식으로 보내는 대신에 아래처럼 가능.
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("brandId", brandId+"");
+                return params;
+            }
+        };
+
+        queue.add(request);
+
+
+        return result;
+    }
+
+
+    public void updateItem(){
+
+        result = "";
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        StringRequest request = new StringRequest(Request.Method.POST, url+"/item/update",
+                //요청 성공 시
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("result", "[" + response + "]");
+                        result = response;
+                    }
+                },
+                // 에러 발생 시
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("error", "[" + error.getMessage() + "]");
+                    }
+                }) {
+            //요청보낼 때 추가로 파라미터가 필요할 경우
+            //url?a=xxx 이런식으로 보내는 대신에 아래처럼 가능.
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                //params.put("brandId", brandId+"");
+                return params;
+            }
+        };
+
+        queue.add(request);
+    }
+
+    public void detailItem(){
+
+        result = "";
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        StringRequest request = new StringRequest(Request.Method.POST, url+"/item/detail",
+                //요청 성공 시
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("result", "[" + response + "]");
+                        result = response;
+                    }
+                },
+                // 에러 발생 시
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("error", "[" + error.getMessage() + "]");
+                    }
+                }) {
+            //요청보낼 때 추가로 파라미터가 필요할 경우
+            //url?a=xxx 이런식으로 보내는 대신에 아래처럼 가능.
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                //params.put("brandId", brandId+"");
+                return params;
+            }
+        };
+
+        queue.add(request);
+    }
+
+    public void deleteItem(){
+
+        result = "";
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        StringRequest request = new StringRequest(Request.Method.POST, url+"/item/delete",
+                //요청 성공 시
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("result", "[" + response + "]");
+                        result = response;
+                    }
+                },
+                // 에러 발생 시
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("error", "[" + error.getMessage() + "]");
+                    }
+                }) {
+            //요청보낼 때 추가로 파라미터가 필요할 경우
+            //url?a=xxx 이런식으로 보내는 대신에 아래처럼 가능.
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                //params.put("brandId", brandId+"");
+                return params;
+            }
+        };
+
+        queue.add(request);
+    }
+
+    public void decreseAmountItem(){
+
+        result = "";
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        StringRequest request = new StringRequest(Request.Method.POST, url+"/item/decreseAmount",
+                //요청 성공 시
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("result", "[" + response + "]");
+                        result = response;
+                    }
+                },
+                // 에러 발생 시
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("error", "[" + error.getMessage() + "]");
+                    }
+                }) {
+            //요청보낼 때 추가로 파라미터가 필요할 경우
+            //url?a=xxx 이런식으로 보내는 대신에 아래처럼 가능.
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                //params.put("brandId", brandId+"");
+                return params;
+            }
+        };
+
+        queue.add(request);
     }
 
 
