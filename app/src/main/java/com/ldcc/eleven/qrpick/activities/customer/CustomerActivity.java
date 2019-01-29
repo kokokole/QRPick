@@ -9,7 +9,6 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -18,19 +17,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.Surface;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.ml.common.FirebaseMLException;
-import com.google.firebase.ml.vision.FirebaseVision;
-import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
-import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetector;
-import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetectorOptions;
-import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
 import com.ldcc.eleven.qrpick.R;
 import com.ldcc.eleven.qrpick.activities.dataSetListener;
-import com.ldcc.eleven.qrpick.activities.manager.MenuActivity;
 import com.ldcc.eleven.qrpick.qr.common.CameraSource;
 import com.ldcc.eleven.qrpick.qr.common.CameraSourcePreview;
 import com.ldcc.eleven.qrpick.qr.common.GraphicOverlay;
@@ -182,7 +171,7 @@ public class CustomerActivity extends AppCompatActivity implements dataSetListen
     @Override
     public void setData(String data) {
         qrData = data;
-        startActivity(new Intent(getApplicationContext(), MenuActivity.class).putExtra("data", qrData));
+        startActivity(new Intent(getApplicationContext(), ItemListActivity.class).putExtra("data", qrData));
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {

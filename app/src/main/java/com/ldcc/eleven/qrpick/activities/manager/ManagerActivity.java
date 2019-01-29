@@ -11,8 +11,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.ldcc.eleven.qrpick.R;
 import com.ldcc.eleven.qrpick.activities.dataSetListener;
 import com.ldcc.eleven.qrpick.qr.barcodescanning.BarcodeScanningProcessor;
@@ -73,6 +71,7 @@ public class ManagerActivity extends AppCompatActivity implements dataSetListene
                 if (graphicOverlay == null) {
                     Log.d(TAG, "resume: graphOverlay is null");
                 }
+                Log.d(TAG, "startCameraSource");
                 preview.start(cameraSource, graphicOverlay);
             } catch (IOException e) {
                 Log.e(TAG, "Unable to start camera source.", e);
@@ -113,7 +112,8 @@ public class ManagerActivity extends AppCompatActivity implements dataSetListene
             int requestCode, String[] permissions, int[] grantResults) {
         Log.i(TAG, "Permission granted!");
         if (allPermissionsGranted()) {
-            new IntentIntegrator(ManagerActivity.this).initiateScan();
+            createCameraSource(selectedModel);
+
 
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -193,6 +193,6 @@ public class ManagerActivity extends AppCompatActivity implements dataSetListene
     @Override
     public void setData(String data) {
         qrData = data;
-        startActivity(new Intent(getApplicationContext(), MenuActivity.class).putExtra("data", qrData));
+        startActivity(new Intent(getApplicationContext(), MnglistActivity.class).putExtra("data", qrData));
     }
 }

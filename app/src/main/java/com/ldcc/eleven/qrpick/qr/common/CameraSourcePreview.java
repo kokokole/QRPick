@@ -64,6 +64,7 @@ public class CameraSourcePreview extends ViewGroup {
   }
 
   public void start(CameraSource cameraSource, GraphicOverlay overlay) throws IOException {
+    Log.d("CameraSourcePreview", "start");
     this.overlay = overlay;
     start(cameraSource);
   }

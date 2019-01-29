@@ -13,8 +13,6 @@
 // limitations under the License.
 package com.ldcc.eleven.qrpick.qr.barcodescanning;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,7 +27,6 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 
 
 import com.ldcc.eleven.qrpick.activities.dataSetListener;
-import com.ldcc.eleven.qrpick.activities.manager.MenuActivity;
 import com.ldcc.eleven.qrpick.qr.common.CameraImageGraphic;
 import com.ldcc.eleven.qrpick.qr.common.FrameMetadata;
 import com.ldcc.eleven.qrpick.qr.common.GraphicOverlay;

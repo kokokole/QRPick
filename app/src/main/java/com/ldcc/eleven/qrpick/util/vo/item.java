@@ -1,6 +1,6 @@
 package com.ldcc.eleven.qrpick.util.vo;
 
-public class item {
+public class Item {
     private String modelNumber, category, name, information;
     private int price, discountPrice, brand;
 
@@ -60,3 +60,4 @@ public class item {
         this.brand = brand;
     }
 }
+
