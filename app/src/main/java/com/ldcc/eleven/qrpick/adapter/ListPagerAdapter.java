@@ -3,42 +3,35 @@ package com.ldcc.eleven.qrpick.adapter;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
+import com.ldcc.eleven.qrpick.fragments.ItemViewFragment;
 import com.ldcc.eleven.qrpick.fragments.TabFragment1;
 import com.ldcc.eleven.qrpick.fragments.TabFragment2;
 import com.ldcc.eleven.qrpick.fragments.TabFragment3;
 
+import java.util.ArrayList;
+
 
 public class ListPagerAdapter extends FragmentStatePagerAdapter {
-    int mNumOfTabs;
-
-    public ListPagerAdapter(FragmentManager fm, int NumOfTabs) {
+    private ArrayList<ItemViewFragment> fragments = new ArrayList<ItemViewFragment>();
+    public ListPagerAdapter(FragmentManager fm) {
         super(fm);
-        this.mNumOfTabs = NumOfTabs;
+    }
+
+    public void addItem(ItemViewFragment fragment){
+        fragments.add(fragment);
     }
 
     @Override
     public Fragment getItem(int position) {
-
-        switch (position) {
-            case 0:
-                TabFragment1 tab1 = new TabFragment1();
-                return tab1;
-            case 1:
-                TabFragment2 tab2 = new TabFragment2();
-                return tab2;
-            case 2:
-                TabFragment3 tab3 = new TabFragment3();
-                return tab3;
-            default:
-                return null;
-        }
+        return fragments.get(position);
     }
 
     @Override
     public int getCount() {
-        return mNumOfTabs;
+        return fragments.size();
     }
 }

@@ -5,9 +5,13 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activities.manager.MnglistActivity">
+        android:background="@drawable/loginbackground"
+        tools:context=".activities.manager.MnglistActivity"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+>
 
-    <android.support.design.widget.AppBarLayout
+    <!--<android.support.design.widget.AppBarLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:theme="@style/AppTheme.AppBarOverlay">
@@ -16,68 +20,28 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
+                android:background="@color/colorList"
                 app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
-    </android.support.design.widget.AppBarLayout>
+    </android.support.design.widget.AppBarLayout>-->
 
-    <LinearLayout
-            android:layout_marginTop="70dp"
-            android:orientation="horizontal"
+    <EditText
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            >
-
-        <TextView
-            android:text="\| 상품이미지 \|"
-            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/editText2"
+            android:hint="상품 검색"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:textColorHint="#42436A"
+            android:drawableEnd="@drawable/search"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-            android:textColor="#000000"
-            android:layout_weight="1"
-            android:layout_height="match_parent"/>
-
-        <TextView
-                android:text="\t모델명 \|"
-                android:layout_width="wrap_content"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                android:textColor="#000000"
-                android:layout_weight="1"
-                android:layout_height="match_parent"/>
-
-        <TextView
-                android:text="사이즈 \|"
-                android:layout_width="wrap_content"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                android:textColor="#000000"
-                android:layout_weight="1"
-                android:layout_height="match_parent"/>
-
-        <TextView
-                android:text="가격 \|"
-                android:layout_width="wrap_content"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                android:textColor="#000000"
-                android:layout_weight="1"
-                android:layout_height="match_parent"/>
-
-        <TextView
-                android:text="상품명 \|"
-                android:layout_width="wrap_content"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                android:textColor="#000000"
-                android:layout_weight="1"
-                android:layout_height="match_parent"/>
-        <TextView
-                android:text="수량 \|"
-                android:layout_width="wrap_content"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                android:textColor="#000000"
-                android:layout_weight="1"
-                android:layout_height="match_parent"/>
-
-    </LinearLayout>
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/searchfield"
+            android:layout_marginTop="10dp"
+            android:textColor="#E1CCEF"/>
 
     <include layout="@layout/content_mnglist"/>
 

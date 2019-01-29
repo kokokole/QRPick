@@ -171,7 +171,7 @@ public class CustomerActivity extends AppCompatActivity implements dataSetListen
     @Override
     public void setData(String data) {
         qrData = data;
-        startActivity(new Intent(getApplicationContext(), ItemListActivity.class).putExtra("data", qrData));
+        startActivity(new Intent(getApplicationContext(), TempActivity.class).putExtra("data", qrData));
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 //            api.getListItem("6");
 //        api.updateDisplay("1", "ddd", "322", "ffff");
 //        api.deleteDisplay("6");
-//        api.updateItem("190129", "시간", "1000","가짜", "500", "5", "{ \"color\" : \"blue\" }", "1", "9", "13");
+//        api.updateItem("190129", "시간", "1000","가짜", "500", "5", "{ \ol"cor\" : \"blue\" }", "1", "9", "13");
 //        api.getListItem("9");
 
             String data  = api.detailItem("13");

@@ -8,7 +8,7 @@ public class Item {
 //    private List<information> information;
 private String information;
 
-    private String imagePath, ImageUrl, createdAt, updatedAt;
+    private String imagePath, imageUrl, createdAt, updatedAt;
 
     public String getModelNumber() {
         return modelNumber;
@@ -91,11 +91,11 @@ private String information;
     }
 
     public String getImageUrl() {
-        return ImageUrl;
+        return imageUrl;
     }
 
     public void setImageUrl(String imageUrl) {
-        ImageUrl = imageUrl;
+        this.imageUrl = imageUrl;
     }
 
     public String getCreatedAt() {

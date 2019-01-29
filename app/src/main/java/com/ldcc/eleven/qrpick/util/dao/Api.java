@@ -11,6 +11,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.ldcc.eleven.qrpick.R;
 import com.ldcc.eleven.qrpick.util.vo.DetailItem;
+import com.ldcc.eleven.qrpick.util.vo.ListItem;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -282,6 +283,8 @@ public class Api {
                     public void onResponse(String response) {
                         Log.d("result", "[" + response + "]");
                         result = response;
+
+
                     }
                 },
                 // 에러 발생 시

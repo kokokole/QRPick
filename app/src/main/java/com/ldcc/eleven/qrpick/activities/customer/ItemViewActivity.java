@@ -34,7 +34,7 @@ public class ItemViewActivity extends AppCompatActivity {
         TextView textView3 = findViewById(R.id.textView7);
         textView3.setText("tttt");
 
-        TextView textView4 = findViewById(R.id.textView18);
+        TextView textView4 = findViewById(R.id.textView8);
         textView4.setText("tttt");
 
         TextView textView5 = findViewById(R.id.textView4);

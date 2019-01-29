@@ -122,15 +122,15 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
 //        for (int i = 0; i < barcodes.size(); ++i) {
         if(barcodes.size() > 0) {
             FirebaseVisionBarcode barcode = barcodes.get(0);
-            // BarcodeGraphic barcodeGraphic = new BarcodeGraphic(graphicOverlay, barcode);
-            // graphicOverlay.add(barcodeGraphic);  // 코드를 읽으면 그 내용을 화면에 추가
+             BarcodeGraphic barcodeGraphic = new BarcodeGraphic(graphicOverlay, barcode);
+             graphicOverlay.add(barcodeGraphic);  // 코드를 읽으면 그 내용을 화면에 추가
             Log.d("code read", barcode.getValueType() + " /// " + barcode.getRawValue());  // 코드 읽기
 
             dsl.setData(barcode.getRawValue());
         }
 
 //        }
-       // graphicOverlay.postInvalidate();  // 코드를 읽으면 그 내용을 화면에 보여줌
+        graphicOverlay.postInvalidate();  // 코드를 읽으면 그 내용을 화면에 보여줌
     }
 
     @Override
