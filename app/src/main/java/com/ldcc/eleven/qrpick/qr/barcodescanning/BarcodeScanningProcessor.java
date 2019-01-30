@@ -131,6 +131,7 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
 
 //        }
         graphicOverlay.postInvalidate();  // 코드를 읽으면 그 내용을 화면에 보여줌
+
     }
 
     @Override

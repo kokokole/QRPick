@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.ldcc.eleven.qrpick.R;
 import com.ldcc.eleven.qrpick.activities.dataSetListener;
+import com.ldcc.eleven.qrpick.adapter.MyAdapter;
 import com.ldcc.eleven.qrpick.qr.barcodescanning.BarcodeScanningProcessor;
 import com.ldcc.eleven.qrpick.qr.common.CameraSource;
 import com.ldcc.eleven.qrpick.qr.common.CameraSourcePreview;
@@ -41,8 +43,7 @@ public class ManagerActivity extends AppCompatActivity implements dataSetListene
     private GraphicOverlay graphicOverlay;
     private String selectedModel = FACE_CONTOUR;
     private String qrData = null;
-
-
+    Intent mIntent;
     @Override
     protected void onResume() {
         super.onResume();
@@ -176,9 +177,9 @@ public class ManagerActivity extends AppCompatActivity implements dataSetListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manager);
 
-        Intent intent = getIntent();
+        mIntent = getIntent();
 
-        go = intent.getIntExtra("go", 0);
+        go = mIntent.getIntExtra("go", 0);
 
 
         preview = (CameraSourcePreview) findViewById(R.id.firePreview);
@@ -204,48 +205,33 @@ public class ManagerActivity extends AppCompatActivity implements dataSetListene
     String result;
     @Override
     public void setData(String data) {
+
+        //바코드 데이터 읽어오면 다음 화면으로 넘어감
+
+
+        // TODO 여기 수정해보자
         qrData = data;
-        if(go == 0)
+        if(go == 0) {
             startActivity(new Intent(getApplicationContext(), MnglistActivity.class).putExtra("data", qrData));
+            finish();
+        }
         else{  // 등록버튼을 눌렀을 때
             Log.d("create", qrData);
+            Intent intent = new Intent(getApplicationContext(), MenudetailActivity.class).putExtra("data", qrData).putExtra("adapter",mIntent.getParcelableExtra("adapter"));
 
-//            Gson gson = new Gson();
-//            final Qr qr = gson.fromJson(qrData, Qr.class);
-//            final Item item = gson.fromJson(qrData, Item.class);
-
-
-//            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-//
-//            StringRequest request = new StringRequest(Request.Method.POST, "http://18.223.57.133:3000"+"/item/create",
-//                    //요청 성공 시
-//                    new Response.Listener<String>() {
-//                        @Override
-//                        public void onResponse(String response) {
-//                            Log.d("result", "[" + response + "]");
-//                            result = response;
-//                        }
-//                    },
-//                    // 에러 발생 시
-//                    new Response.ErrorListener() {
-//                        @Override
-//                        public void onErrorResponse(VolleyError error) {
-//                            Log.d("error", "[" + error.getMessage() + "]");
-//                        }
-//                    }) {
-//
-//                @Override
-//                protected Map<String, String> getParams() throws AuthFailureError {
-//                    Map<String, String> params = new HashMap<>();
-//                    params.put("id", item.getBrandId()+"");
-//                    return params;
-//                }
-//            };
-//
-//            queue.add(request);
-            Intent intent = new Intent(getApplicationContext(), MenudetailActivity.class).putExtra("data", qrData);
             intent.putExtra("flag", "create");
-            startActivity(intent);
+            startActivityForResult(intent, 0);
+            finish();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 0){
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("json", data.getStringExtra("json"));
+            setResult(0, resultIntent);
         }
     }
 }

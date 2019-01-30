@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.ldcc.eleven.qrpick.R;
+import com.ldcc.eleven.qrpick.util.vo.Information;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,9 +54,10 @@ public class ItemViewFragment extends Fragment {
         ImageView mainImageView = rootView.findViewById(R.id.imageView8);
         TextView modelNumberView = rootView.findViewById(R.id.textView3);
         TextView brandNameView = rootView.findViewById(R.id.textView9);
-        TextView nameView = rootView.findViewById(R.id.textView10);
+        TextView nameView = rootView.findViewById(R.id.textileView);
         TextView priceView = rootView.findViewById(R.id.textView11);
-
+        TextView colorView = rootView.findViewById(R.id.colorView);
+        TextView textileView = rootView.findViewById(R.id.textileView);
 
 
         if(modelNumber==null){
@@ -77,6 +79,11 @@ public class ItemViewFragment extends Fragment {
             modelNumberView.setText(modelNumber);
             priceView.setText(discountPrice);
             nameView.setText(name);
+            Gson gson = new Gson();
+            Information info = gson.fromJson(information, Information.class);
+            colorView.setText(info.getColor());
+            textileView.setText(info.getTextile());
+
 
         }
 

@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:ems="10"
-            android:id="@+id/editText2"
+            android:id="@+id/pw"
             android:hint="상품 검색"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"

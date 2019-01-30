@@ -173,7 +173,10 @@ public class CustomerActivity extends AppCompatActivity implements dataSetListen
         qrData = data;
         //매대 QR은 번호만, 상품은 번호와 이미지까지
         startActivity(new Intent(getApplicationContext(), TempActivity.class).putExtra("data", qrData));
+        finish();
+
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -196,10 +199,6 @@ public class CustomerActivity extends AppCompatActivity implements dataSetListen
         } else {
             getRuntimePermissions();
         }
-
-
-
-
 
     }
 

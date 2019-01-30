@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,31 +21,45 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.ldcc.eleven.qrpick.R;
-import com.ldcc.eleven.qrpick.activities.customer.ItemViewActivity;
+import com.ldcc.eleven.qrpick.activities.dataSetListener;
 import com.ldcc.eleven.qrpick.adapter.MyAdapter;
 import com.ldcc.eleven.qrpick.util.dao.Api;
-import com.ldcc.eleven.qrpick.util.vo.DetailItem;
 import com.ldcc.eleven.qrpick.util.vo.Item;
 import com.ldcc.eleven.qrpick.util.vo.ListItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class MnglistActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class MnglistActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, dataSetListener {
 
     SwipeMenuListView swipelist;
     MyAdapter myAdapter;
-//    ArrayList<ProductsList> items= new ArrayList<>();
 
     ArrayList<Item> items = new ArrayList<>();
 
     EditText search; // 검색
     String brandId;
+    int requestCode = 0;
+
+    @Override
+    public void setData(String data) {
+        Gson gson = new Gson();
+        Item item = gson.fromJson(data, Item.class);
+        items.add(item);
+        myAdapter.notifyDataSetChanged();
+
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        myAdapter.notifyDataSetChanged();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +75,7 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
         }catch(Exception e){
             brandId = "23";
         }
-        brandId = "23";
+//        brandId = "23";
 
         /**Swipe listview*/
         swipelist = findViewById(R.id.swipelist);
@@ -69,7 +83,7 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
         myAdapter = new MyAdapter(MnglistActivity.this, items);
         swipelist.setAdapter(myAdapter);
 
-        search = findViewById(R.id.editText2);
+        search = findViewById(R.id.pw);
         search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -124,14 +138,45 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
                         Gson gson = new Gson();
                         String json = gson.toJson(item);
                         Intent intent = new Intent(getApplicationContext(), MenudetailActivity.class).putExtra("data", json);
+                        intent.putExtra("position", position);
                         intent.putExtra("flag", "update");
-                        startActivity(intent);
-
+                        startActivityForResult(intent, requestCode+1);
+                        myAdapter.notifyDataSetChanged();
 
                         break;
                     case 1:
                         /**delete 클릭한 경우*/
+                        // TODO 삭제구현하기
+                        final Item item2 = (Item) myAdapter.getItem(position);
                         Toast.makeText(MnglistActivity.this, items.get(position).getName() + " 이(가) 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+                        StringRequest request = new StringRequest(Request.Method.POST, "http://18.223.57.133:3000"+ "/item/delete",
+                                //요청 성공 시
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        Log.d("result", "[" + response + "]");
+                                        result = response;
+                                    }
+                                },
+                                // 에러 발생 시
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.d("error", "[" + error.getMessage() + "]");
+                                    }
+                                }) {
+
+                            @Override
+                            protected Map<String, String> getParams() throws AuthFailureError {
+                                Map<String, String> params = new HashMap<>();
+                                params.put("id", item2.getId()+"");
+                                return params;
+                            }
+                        };
+
+                        queue.add(request);
                         items.remove(position);
                         myAdapter.notifyDataSetChanged();
                         break;
@@ -147,7 +192,13 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
             @Override
             public void onClick(View view) {
                 /**페이지 작성되면 수정*/
-                startActivity(new Intent(getApplicationContext(), ManagerActivity.class).putExtra("go", 1));
+                // TODO 등록버튼
+                startActivityForResult(new Intent(getApplicationContext(), ManagerActivity.class).putExtra("go", 1).putExtra("adapter", myAdapter), requestCode);
+                // TODO MenudatailActivity를 바로 띄우는 걸로 수정해보자.
+                // TODO MenudatailActivity에 QR코드 인식 후 데이터 가져오게 해보자
+                // TODO 데이터 가져와서 adapter와 연동하기
+
+
             }
         });
     }
@@ -157,11 +208,21 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
         Log.e("[ITEM CHK]", "test");
 
 
-        Item item = (Item) myAdapter.getItem(position);
-        Toast.makeText(this, position + " 클릭됨", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, position + " 클릭됨", Toast.LENGTH_SHORT).show();
 //        Gson gson = new Gson();
 //        String json = gson.toJson(item);
 //        startActivity(new Intent(getApplicationContext(), ItemViewActivity.class).putExtra("data", json));
+
+        // TODO 클릭해도 수정 페이지가 열리게
+        Item item = (Item) myAdapter.getItem(position);
+        Gson gson = new Gson();
+        String json = gson.toJson(item);
+        Intent intent = new Intent(getApplicationContext(), MenudetailActivity.class).putExtra("data", json);
+        intent.putExtra("flag", "update");
+        startActivityForResult(intent, requestCode+1);
+        myAdapter.notifyDataSetChanged();
+
+
     }
 
 
@@ -193,7 +254,6 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
                             items.add(i);
                             Log.d("Mng", i.getName());
                             myAdapter.notifyDataSetChanged();
-
                         }
 
                     }
@@ -214,30 +274,7 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
         };
 
         queue.add(request);
-//
-//        Item t = new Item();
-//        t.setAmount(5);
-//        t.setInformation("info");
-//        t.setPrice(123);
-//        t.setName("asd");
-//        t.setImageUrl("http://www.usausashop.com/web/product/big/201707/427_shop1_650014.jpg");
-//
-//        items.add(t);
-//        t = new Item();
-//        t.setAmount(5);
-//        t.setInformation("info");
-//        t.setPrice(123);
-//        t.setName("qwe");
-//        t.setImageUrl("http://www.usausashop.com/web/product/big/201707/427_shop1_650014.jpg");
-//
-//        items.add(t);
-//        t = new Item();
-//        t.setAmount(5);
-//        t.setInformation("info");
-//        t.setPrice(123);
-//        t.setName("cvz");
-//        t.setImageUrl("http://www.usausashop.com/web/product/big/201707/427_shop1_650014.jpg");
-//        items.add(t);
+
         myAdapter.notifyDataSetChanged();
 
 
@@ -274,5 +311,24 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
         menu.addMenuItem(deleteItem);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+//        if(this.requestCode == requestCode){
+//            Log.d("request", "0");
+//            if(data.getStringExtra("json") != null){
+//                Log.d("request", "0  ifif");
+//
+//                Gson gson = new Gson();
+//                String json = data.getStringExtra("data");
+//                Item item = gson.fromJson(json, Item.class);
+//                items.add(item);
+//                myAdapter.notifyDataSetChanged();
+//            }
+//        }else if(this.requestCode == requestCode+1){
+//
+//        }
+
+    }
 }

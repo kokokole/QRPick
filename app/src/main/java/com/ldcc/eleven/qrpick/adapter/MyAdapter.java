@@ -1,6 +1,8 @@
 package com.ldcc.eleven.qrpick.adapter;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +15,11 @@ import com.ldcc.eleven.qrpick.R;
 import com.ldcc.eleven.qrpick.activities.manager.ProductViewHolder;
 import com.ldcc.eleven.qrpick.activities.manager.ProductsList;
 import com.ldcc.eleven.qrpick.util.vo.Item;
+import org.w3c.dom.Comment;
 
 import java.util.ArrayList;
 
-public class MyAdapter extends BaseAdapter implements Filterable {
+public class MyAdapter extends BaseAdapter implements Filterable, Parcelable {
 
     Context context;
     LayoutInflater layoutInflater;
@@ -24,6 +27,40 @@ public class MyAdapter extends BaseAdapter implements Filterable {
     ArrayList<Item> productsList;
 
     ArrayList<Item> filteredItemList;
+
+
+    /**
+     * Pacelable
+     */
+
+    public MyAdapter(Parcel src) {
+        productsList = (ArrayList<Item>) src.readSerializable();
+    }
+
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
+        @Override
+        public Object createFromParcel(Parcel source) {  // Parcelable를 가지고 CVAdapter를 만들 때 호출됨
+            return new MyAdapter(source);
+        }
+
+        @Override
+        public Object[] newArray(int size) {
+            return new MyAdapter[size];
+        }
+    };
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) { // CVAdapter를 Parcelable로 만들 때 호출됨
+        dest.writeSerializable(productsList);
+    }
+
 
     /**
      * 필터추가
@@ -110,6 +147,9 @@ public class MyAdapter extends BaseAdapter implements Filterable {
         return position;
     }
 
+    public void add(Item item){
+        productsList.add(item);
+    }
     @Override
     public View getView(int position, View convertview, ViewGroup viewGroup) {
         View view = convertview;
@@ -136,7 +176,7 @@ public class MyAdapter extends BaseAdapter implements Filterable {
         Glide.with(context)
                 .load(filteredItemList.get(current).getImageUrl())
                 .into(holder.iv_pImg);
-        Log.d("Adapter", filteredItemList .get(current).getImageUrl());
+//        Log.d("Adapter", filteredItemList .get(current).getImageUrl());
         holder.tv_pName.setText(filteredItemList .get(current).getModelNumber());
         holder.tv_pPrice.setText(filteredItemList .get(current).getPrice()+"");
         holder.tv_pBrand.setText(filteredItemList.get(current).getBrandId()+"");
