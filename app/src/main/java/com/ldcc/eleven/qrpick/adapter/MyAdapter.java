@@ -124,6 +124,7 @@ public class MyAdapter extends BaseAdapter implements Filterable {
             holder.tv_pPrice = view.findViewById(R.id.tv_pPrice);
             holder.tv_pSize = view.findViewById(R.id.tv_pSize);
             holder.tv_pQuantity = view.findViewById(R.id.tv_pQuantity);
+            holder.tv_pBrand = view.findViewById(R.id.tv_pBrand);
             view.setTag(holder);
         }else{
             holder = (ProductViewHolder)view.getTag();
@@ -131,13 +132,15 @@ public class MyAdapter extends BaseAdapter implements Filterable {
 
         /**데이터 셋팅*/
         //holder.iv_pImg.setImageResource(R.drawable.test);
+        //"http://www.usausashop.com/web/product/big/201707/427_shop1_650014.jpg"
         Glide.with(context)
-                .load("http://www.usausashop.com/web/product/big/201707/427_shop1_650014.jpg")
+                .load(filteredItemList.get(current).getImageUrl())
                 .into(holder.iv_pImg);
         Log.d("Adapter", filteredItemList .get(current).getImageUrl());
-        holder.tv_pName.setText(filteredItemList .get(current).getName());
+        holder.tv_pName.setText(filteredItemList .get(current).getModelNumber());
         holder.tv_pPrice.setText(filteredItemList .get(current).getPrice()+"");
-        holder.tv_pSize.setText(filteredItemList .get(current).getInformation());
+        holder.tv_pBrand.setText(filteredItemList.get(current).getBrandId()+"");
+//        holder.tv_pSize.setText(filteredItemList .get(current).getInformation());
         holder.tv_pQuantity.setText(filteredItemList .get(current).getAmount()+"");
 
         return view;

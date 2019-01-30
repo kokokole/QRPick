@@ -43,7 +43,10 @@
             android:layout_marginTop="10dp"
             android:textColor="#E1CCEF"/>
 
-    <include layout="@layout/content_mnglist"/>
+    <include layout="@layout/content_mnglist"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:layout_marginTop="55dp"/>
 
     <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"

@@ -21,6 +21,7 @@ import com.ldcc.eleven.qrpick.qr.barcodescanning.BarcodeScanningProcessor;
 import com.ldcc.eleven.qrpick.qr.common.CameraSource;
 import com.ldcc.eleven.qrpick.qr.common.CameraSourcePreview;
 import com.ldcc.eleven.qrpick.qr.common.GraphicOverlay;
+import com.ldcc.eleven.qrpick.util.vo.Item;
 import com.ldcc.eleven.qrpick.util.vo.Qr;
 
 import java.io.IOException;
@@ -207,39 +208,44 @@ public class ManagerActivity extends AppCompatActivity implements dataSetListene
         if(go == 0)
             startActivity(new Intent(getApplicationContext(), MnglistActivity.class).putExtra("data", qrData));
         else{  // 등록버튼을 눌렀을 때
-            Gson gson = new Gson();
-            final Qr qr = gson.fromJson(qrData, Qr.class);
+            Log.d("create", qrData);
+
+//            Gson gson = new Gson();
+//            final Qr qr = gson.fromJson(qrData, Qr.class);
+//            final Item item = gson.fromJson(qrData, Item.class);
 
 
-            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-
-            StringRequest request = new StringRequest(Request.Method.POST, "http://18.223.57.133:3000"+"/item/delete",
-                    //요청 성공 시
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            Log.d("result", "[" + response + "]");
-                            result = response;
-                        }
-                    },
-                    // 에러 발생 시
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.d("error", "[" + error.getMessage() + "]");
-                        }
-                    }) {
-
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("id", qr.getId());
-                    return params;
-                }
-            };
-
-            queue.add(request);
-            startActivity(new Intent(getApplicationContext(), MenudetailActivity.class).putExtra("data", result));
+//            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+//
+//            StringRequest request = new StringRequest(Request.Method.POST, "http://18.223.57.133:3000"+"/item/create",
+//                    //요청 성공 시
+//                    new Response.Listener<String>() {
+//                        @Override
+//                        public void onResponse(String response) {
+//                            Log.d("result", "[" + response + "]");
+//                            result = response;
+//                        }
+//                    },
+//                    // 에러 발생 시
+//                    new Response.ErrorListener() {
+//                        @Override
+//                        public void onErrorResponse(VolleyError error) {
+//                            Log.d("error", "[" + error.getMessage() + "]");
+//                        }
+//                    }) {
+//
+//                @Override
+//                protected Map<String, String> getParams() throws AuthFailureError {
+//                    Map<String, String> params = new HashMap<>();
+//                    params.put("id", item.getBrandId()+"");
+//                    return params;
+//                }
+//            };
+//
+//            queue.add(request);
+            Intent intent = new Intent(getApplicationContext(), MenudetailActivity.class).putExtra("data", qrData);
+            intent.putExtra("flag", "create");
+            startActivity(intent);
         }
     }
 }

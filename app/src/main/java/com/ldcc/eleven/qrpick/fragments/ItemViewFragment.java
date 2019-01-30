@@ -44,7 +44,7 @@ public class ItemViewFragment extends Fragment {
         Log.d("ItemViewFragment", information);
 
     }
-
+    final static String TAG = "ItemViewFragment";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -59,6 +59,8 @@ public class ItemViewFragment extends Fragment {
 
 
         if(modelNumber==null){
+            Log.d("ItemViewFragment", "null");
+
             Glide.with(getActivity().getApplicationContext()).load("http://media.dcshoes.kr/media/catalog/product/cache/image/1000x1000/9df78eab33525d08d6e5fb8d27136e95/d/8/d851fh234wej-1.jpg").into(mainImageView);
 
             modelNumberView.setText("ASDADAS");
@@ -66,7 +68,11 @@ public class ItemViewFragment extends Fragment {
             nameView.setText("QWeqwe");
         }
         else{
+            Log.d("ItemViewFragment", "not null");
             Glide.with(getActivity().getApplicationContext()).load(imageUrl).into(mainImageView);
+            Log.d(TAG, modelNumber);
+            Log.d(TAG, discountPrice);
+            Log.d(TAG, name);
 
             modelNumberView.setText(modelNumber);
             priceView.setText(discountPrice);
@@ -74,7 +80,7 @@ public class ItemViewFragment extends Fragment {
 
         }
 
-        return inflater.inflate(R.layout.activity_item_view, container, false);
+        return rootView;
     }
 
 }

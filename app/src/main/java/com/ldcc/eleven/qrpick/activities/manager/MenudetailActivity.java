@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.ldcc.eleven.qrpick.R;
 import com.ldcc.eleven.qrpick.util.vo.DetailItem;
 import com.ldcc.eleven.qrpick.util.vo.Item;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,11 +21,13 @@ import java.util.Map;
 public class MenudetailActivity extends AppCompatActivity {
 
 
-    Item item=null;
+    Item item = null;
     EditText modelnm;//상품명
-    EditText itemnm ; //모델명
+    EditText itemnm; //모델명
     EditText itemprice;//할인가격
     EditText itemamount; // 수량
+    String flag;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,12 +37,12 @@ public class MenudetailActivity extends AppCompatActivity {
         Button insertbtn = findViewById(R.id.insertbtn);
 
         Intent intent = getIntent();
-
+        flag = intent.getStringExtra("flag");
         String json = intent.getStringExtra("data");
+        Log.d("json", json);
         Gson gson = new Gson();
         item = gson.fromJson(json, Item.class);
-        Log.d("detail", item.getName());
-
+        Log.d("detail", item.toString());
 
 
         int mode = 2;//intent.getExtras().getInt("mode"); //등록 or 수정
@@ -79,20 +82,17 @@ public class MenudetailActivity extends AppCompatActivity {
         });
 
 
-
-
         ///바코드정보 read 후, setting
-        modelnm.setText("PKBLUE");
-        itemnm.setText("남성PK셔츠");
-        itemprice.setText("108000");
+        modelnm.setText(item.getModelNumber());
+        itemnm.setText(item.getName());
+        itemprice.setText(item.getDiscountPrice()+"");
 
 
-        if(mode == 1) {
+        if (flag.equals("crate")) {
             insertbtn.setText("등록");
 
 
-        }
-        else {
+        } else if(flag.equals("update")){
             insertbtn.setText("수정");
             selectItem(itemid);
         }
@@ -103,52 +103,91 @@ public class MenudetailActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "ddddd", Toast.LENGTH_SHORT).show();
                 String url = "http://18.223.57.133:3000";
                 RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                StringRequest request = new StringRequest(Request.Method.POST, url+"/item/update",
-                        //요청 성공 시
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                Log.d("result", "[" + response + "]");
 
-                            }
-                        },
-                        // 에러 발생 시
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.d("error", "[" + error.getMessage() + "]");
-                            }
-                        }) {
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("modelNumber", item.getModelNumber());
-                        params.put("category", item.getCategory());
-                        params.put("price", item.getPrice()+"");
-                        params.put("name", item.getName());
-                        params.put("discountPrice", itemprice.getText()+"");
-                        params.put("amount", itemamount.getText()+"");
-                        params.put("information", item.getInformation());
-                        params.put("image", item.getImageUrl());
-                        params.put("brandId", item.getBrandId()+"");
-                        params.put("id", item.getId()+"");
+                if (flag.equals("create")) {
+
+                    StringRequest request = new StringRequest(Request.Method.POST, url + "/item/create",
+                            //요청 성공 시
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    Log.d("result1", "[" + response + "]");
+                                }
+                            },
+                            // 에러 발생 시
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.d("error", "[" + error.getMessage() + "]");
+                                }
+                            }) {
+                        //요청보낼 때 추가로 파라미터가 필요할 경우
+                        //url?a=xxx 이런식으로 보내는 대신에 아래처럼 가능.
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+                            Map<String, String> params = new HashMap<>();
+                            params.put("modelNumber", item.getModelNumber());
+                            params.put("category", item.getCategory());
+                            params.put("price", item.getPrice() + "");
+                            params.put("name", item.getName());
+                            params.put("discountPrice", item.getDiscountPrice() + "");
+                            params.put("amount", item.getAmount() + "");
+                            params.put("information", item.getInformation());
+                            params.put("brandId", item.getBrandId() + "");
+//                            params.put("imageUrl", item.getImageUrl());
+                            return params;
+                        }
+                    };
+
+                    queue.add(request);
+
+                } else if (flag.equals("update")) {
+                    StringRequest request = new StringRequest(Request.Method.POST, url + "/item/update",
+                            //요청 성공 시
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    Log.d("result2", "[" + response + "]");
+                                }
+                            },
+                            // 에러 발생 시
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.d("error", "[" + error.getMessage() + "]");
+                                }
+                            }) {
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+                            Map<String, String> params = new HashMap<>();
+                            params.put("modelNumber", item.getModelNumber());
+                            params.put("category", item.getCategory());
+                            params.put("price", item.getPrice() + "");
+                            params.put("name", item.getName());
+                            params.put("discountPrice", itemprice.getText() + "");
+                            params.put("amount", itemamount.getText() + "");
+                            params.put("information", item.getInformation());
+                            params.put("image", item.getImageUrl());
+                            params.put("brandId", item.getBrandId() + "");
+                            params.put("id", item.getId() + "");
 
 
-                        return params;
-                    }
-                };
+                            return params;
+                        }
 
-                queue.add(request);
+                    };
+                    queue.add(request);
+                }
+                finish();
 
             }
+
         });
-
-
 
 
     }
 
-    private void selectItem(int itemid){
+    private void selectItem(int itemid) {
         //상품id로 select
 
 

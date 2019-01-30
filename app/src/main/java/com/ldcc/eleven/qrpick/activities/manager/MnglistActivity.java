@@ -45,23 +45,23 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
     ArrayList<Item> items = new ArrayList<>();
 
     EditText search; // 검색
-    int brandId;
+    String brandId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mnglist);
 
         Intent intent = getIntent();
-        Toast.makeText(this, "" + intent.getStringExtra("data"), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "" + intent.getStringExtra("data"), Toast.LENGTH_SHORT).show();
         // 매대에 있는 상품을 등록/수정/삭제할 수 있는 MngListActivity를 띄운다.
         // Intent로 넘겨받은 데이터를 가지고 해당되는 매대 데이터를 읽어온다.
-        try {
-            brandId = Integer.parseInt(intent.getStringExtra("data"));
+        try{
+            brandId = intent.getStringExtra("data");
+        }catch(Exception e){
+            brandId = "23";
         }
-        catch(Exception e){
-            brandId=0;
-        }
-
+        brandId = "23";
 
         /**Swipe listview*/
         swipelist = findViewById(R.id.swipelist);
@@ -85,16 +85,19 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
             public void afterTextChanged(Editable editable) {
                 Log.d("Msg", editable.toString());
                 String filterText = editable.toString();
-                if(filterText.length() > 0 ){
+                if (filterText.length() > 0) {
                     swipelist.setFilterText(filterText);
-                }else{
+                } else {
                     swipelist.clearTextFilter();
                 }
+//                    Log.d("mng", ((MyAdapter)swipelist.getAdapter()).toString()  + " //// " + myAdapter.toString());
+//                ((MyAdapter)(swipelist.getAdapter())).getFilter().filter(filterText) ;
+
             }
         });
 
         /**초기 데이터 입력*/
-        initData(17);
+        initData(brandId);
 
         SwipeMenuCreator creator = new SwipeMenuCreator() {
             @Override
@@ -109,10 +112,10 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
         swipelist.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                switch (index){
+                switch (index) {
                     case 0:
                         /**edit 클릭한 경우*/
-                        Toast.makeText(MnglistActivity.this, "edit num : "+position, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MnglistActivity.this, "edit num : " + position, Toast.LENGTH_SHORT).show();
                         //여기서 수정 페이지로 Activity 이동
                         //startActivity(new Intent(getApplicationContext(),));
 
@@ -120,13 +123,15 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
                         Item item = (Item) myAdapter.getItem(position);
                         Gson gson = new Gson();
                         String json = gson.toJson(item);
-                        startActivity(new Intent(getApplicationContext(), MenudetailActivity.class).putExtra("data", json));
+                        Intent intent = new Intent(getApplicationContext(), MenudetailActivity.class).putExtra("data", json);
+                        intent.putExtra("flag", "update");
+                        startActivity(intent);
 
 
                         break;
                     case 1:
                         /**delete 클릭한 경우*/
-                        Toast.makeText(MnglistActivity.this, items.get(position).getName()+" 이(가) 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MnglistActivity.this, items.get(position).getName() + " 이(가) 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                         items.remove(position);
                         myAdapter.notifyDataSetChanged();
                         break;
@@ -149,95 +154,99 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        Log.e("[ITEM CHK]","test");
+        Log.e("[ITEM CHK]", "test");
 
 
         Item item = (Item) myAdapter.getItem(position);
-        Toast.makeText(this, position+" 클릭됨", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, position + " 클릭됨", Toast.LENGTH_SHORT).show();
 //        Gson gson = new Gson();
 //        String json = gson.toJson(item);
 //        startActivity(new Intent(getApplicationContext(), ItemViewActivity.class).putExtra("data", json));
     }
 
 
-    String result="";
-    /**데이터 초기화 및 리스트에 설정하는 부분. 현재는 테스트 데이터 입력해 놓았음*/
-    private void initData(final int brandId) {
+    String result = "";
+
+    /**
+     * 데이터 초기화 및 리스트에 설정하는 부분. 현재는 테스트 데이터 입력해 놓았음
+     */
+    private void initData(final String brandId) {
         Api api = new Api(getApplicationContext());
         ListItem temp = new ListItem();
 
 
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         String url = "http://18.223.57.133:3000";
+
+        StringRequest request = new StringRequest(Request.Method.POST, url + "/item/list",
+                //요청 성공 시
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("result", "[" + response + "]");
+                        result = response;
+                        Gson gson = new Gson();
+                        ListItem item = gson.fromJson(result, ListItem.class);
+                        Log.d("DDFD", item.getCode() + "");
+                        Log.d("DDFD", item.getData().size() + "");
+                        for (Item i : item.getData()) {
+                            items.add(i);
+                            Log.d("Mng", i.getName());
+                            myAdapter.notifyDataSetChanged();
+
+                        }
+
+                    }
+                },
+                // 에러 발생 시
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("error", "[" + error.getMessage() + "]");
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("brandId", brandId + "");
+                return params;
+            }
+        };
+
+        queue.add(request);
 //
-//        StringRequest request = new StringRequest(Request.Method.POST, url+"/item/list",
-//                //요청 성공 시
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        Log.d("result", "[" + response + "]");
-//                        result = response;
-//                        Gson gson = new Gson();
-//                        ListItem item = gson.fromJson(result, ListItem.class);
-//                        Log.d("DDFD", item.getCode() + "");
-//                        Log.d("DDFD", item.getData().size()+"");
-//                        for(Item i : item.getData()){
-//                            items.add(i);
-//                            Log.d("Mng", i.getName());
-        //                        myAdapter.notifyDataSetChanged();
-
-//                        }
+//        Item t = new Item();
+//        t.setAmount(5);
+//        t.setInformation("info");
+//        t.setPrice(123);
+//        t.setName("asd");
+//        t.setImageUrl("http://www.usausashop.com/web/product/big/201707/427_shop1_650014.jpg");
 //
-//                    }
-//                },
-//                // 에러 발생 시
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Log.d("error", "[" + error.getMessage() + "]");
-//                    }
-//                }) {
-//            @Override
-//            protected Map<String, String> getParams() throws AuthFailureError {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("brandId", brandId+"");
-//                return params;
-//            }
-//        };
+//        items.add(t);
+//        t = new Item();
+//        t.setAmount(5);
+//        t.setInformation("info");
+//        t.setPrice(123);
+//        t.setName("qwe");
+//        t.setImageUrl("http://www.usausashop.com/web/product/big/201707/427_shop1_650014.jpg");
 //
-//        queue.add(request);
-
-        Item t = new Item();
-        t.setAmount(5);
-        t.setInformation("info");
-        t.setPrice(123);
-        t.setName("asd");
-        t.setImageUrl("http://www.usausashop.com/web/product/big/201707/427_shop1_650014.jpg");
-
-        items.add(t);
-        t = new Item();
-        t.setAmount(5);
-        t.setInformation("info");
-        t.setPrice(123);
-        t.setName("qwe");
-        t.setImageUrl("http://www.usausashop.com/web/product/big/201707/427_shop1_650014.jpg");
-
-        items.add(t);
-        t = new Item();
-        t.setAmount(5);
-        t.setInformation("info");
-        t.setPrice(123);
-        t.setName("cvz");
-        t.setImageUrl("http://www.usausashop.com/web/product/big/201707/427_shop1_650014.jpg");
-        items.add(t);
+//        items.add(t);
+//        t = new Item();
+//        t.setAmount(5);
+//        t.setInformation("info");
+//        t.setPrice(123);
+//        t.setName("cvz");
+//        t.setImageUrl("http://www.usausashop.com/web/product/big/201707/427_shop1_650014.jpg");
+//        items.add(t);
         myAdapter.notifyDataSetChanged();
-
 
 
     }
 
-    /**swipe메뉴 설정-수정 및 삭제*/
-    private void swipeMenuSet(SwipeMenu menu){
+    /**
+     * swipe메뉴 설정-수정 및 삭제
+     */
+    private void swipeMenuSet(SwipeMenu menu) {
         /**Update Item*/
         SwipeMenuItem updateItem = new SwipeMenuItem(
                 getApplicationContext());

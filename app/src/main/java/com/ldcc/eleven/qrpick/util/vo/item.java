@@ -8,6 +8,11 @@ public class Item {
 //    private List<information> information;
 private String information;
 
+    @Override
+    public String toString() {
+        return modelNumber + " // " + category + " // " + name + " // " + price + " / " + discountPrice + " // " + amount + " // " + brandId + " // " + id + " // " + information ;
+    }
+
     private String imagePath, imageUrl, createdAt, updatedAt;
 
     public String getModelNumber() {
