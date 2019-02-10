@@ -61,10 +61,12 @@ public class TempActivity extends AppCompatActivity {
         pagerAdapter = new ListPagerAdapter(getSupportFragmentManager());
 
 
+
+
         Intent intent = getIntent();
 //        Toast.makeText(getApplicationContext(), "data : " + intent.getStringExtra("data"), Toast.LENGTH_SHORT).show();
         brandId = intent.getStringExtra("data");
-        Toast.makeText(getApplicationContext(), "data2 : " + brandId, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(), "data2 : " + brandId, Toast.LENGTH_SHORT).show();
 
         // Intent로 넘겨받은 데이터를 가지고 매대에 있는 상품들을 리스트로 만들어 보여준다. (좌우 스크롤 리스트)
 
@@ -250,7 +252,7 @@ public class TempActivity extends AppCompatActivity {
     /**직원호출 이벤트 처리*/
     public void call(View view) {
 
-        String token = "f-azLeHsCkk:APA91bFlKcIhvzYSIYPh4Ek-qEWnfCiZXyHvWf1eHwTL2fhTA6eSj110N1oAXYD_yLCrH0t5wXx80mdVH1mXXN_SwSr0HEHqyF8OmQDIpn8eqz9gxtBqVRn7D9r2qoD5P49pG2OSm0cl";
+        String token = "edsnGcgP-Lc:APA91bHcXv-W-oDywMXq7I7McGuiDbKK1EEuad9FMp1WdhBxUCxi21SkTYHZC3AvMq1XqwMSPAuecIYaHtWP4KZYx_qegqUhlagtGzdX8caqL8b0Hgw6aWgNpQO5uN0t4l7pbjo9S8h1";
         final String SERVER_KEY = "AAAA2ChFt3A:APA91bH6i2FKMe2zsUxFTxQs7DyV6HWAxrQp4YFuZZTNVKiAimaqnuJu96OUZErTWbdgnJHoBwSyZ1KdmzoAKMBYC3U42V0-3nZ9-cp0HUrivDAAFT9VhAB5mhTSXaMNsUf8oeXgygjU\n";
         HttpURLConnection conn = null;
         JSONObject root = null;
@@ -262,7 +264,8 @@ public class TempActivity extends AppCompatActivity {
             JSONObject notification = new JSONObject();
             notification.put("body", "Customer 님이 호출합니다.");
             notification.put("title", "["+getString(R.string.app_name)+"] 직원호출");
-            root.put("notification", notification);
+//            root.put("notification", notification);
+            root.put("data", notification);
             root.put("to", token);
             // FMC 메시지 생성 end
 

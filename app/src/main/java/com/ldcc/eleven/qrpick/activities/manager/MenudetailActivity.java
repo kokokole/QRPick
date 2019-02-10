@@ -34,6 +34,7 @@ public class MenudetailActivity extends AppCompatActivity {
     Gson gson;
     MyAdapter adapter;
     final static String TAG = "MenudetailActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,15 +50,16 @@ public class MenudetailActivity extends AppCompatActivity {
         }
         flag = intent.getStringExtra("flag");
         String json = intent.getStringExtra("data");
-        Log.d("json", json);
+        Log.e("json", json);
         gson = new Gson();
         item = gson.fromJson(json, Item.class);
-        Log.d("detail", item.toString());
-
+        Log.e("detail", item.toString());
+        Log.e("adapter size detail", adapter.getProductsList().size() + "");
+        adapter.getProductsList().add(item);
+        adapter.add(item);
+        adapter.notifyDataSetChanged();
         Information information = gson.fromJson(item.getInformation(), Information.class);
-        Log.d("information", information.getSize());
-
-
+        Log.e("information size", information.getSize());
 
         modelnm = findViewById(R.id.modelnm);//, 모델명
         itemnm = findViewById(R.id.itemnm); //상품명
@@ -67,21 +69,14 @@ public class MenudetailActivity extends AppCompatActivity {
         EditText colorInput = (EditText) findViewById(R.id.spinner);//색상
         colorInput.setText(information.getColor());
 
-
-
         EditText sizeInput = (EditText) findViewById(R.id.spinner2);//사이즈
         sizeInput.setText(information.getSize());
-
 
         ///바코드정보 read 후, setting
         modelnm.setText(item.getModelNumber());
         itemnm.setText(item.getName());
         itemprice.setText(item.getDiscountPrice()+"");
-
-
-
-
-
+        itemamount.setText(item.getAmount() + "");
 
         if (flag.equals("crate")) {
             insertbtn.setText("등록");
@@ -107,7 +102,13 @@ public class MenudetailActivity extends AppCompatActivity {
                                 @Override
                                 public void onResponse(String response) {
                                     Log.d("result1", "[" + response + "]");
+                                    Log.d("adapter size", adapter.getCount() + "");
                                     adapter.add(item);
+                                    Log.d("adapter size", adapter.getCount() + "");
+                                    adapter.notifyDataSetChanged();
+                                    intent.putExtra("item", gson.toJson(item));
+
+                                    setResult(RESULT_OK, intent);
                                     finish();
                                 }
                             },
@@ -130,7 +131,7 @@ public class MenudetailActivity extends AppCompatActivity {
                             params.put("name", item.getName());
                             params.put("discountPrice", item.getDiscountPrice() + "");
 
-                            params.put("amount", item.getAmount() + "");  // TODO 수량 넣으면 수량 없으면 기본값으로
+                            params.put("amount", itemamount.getText() + "");  // TODO 수량 넣으면 수량 없으면 기본값으로
 
                             params.put("information", item.getInformation());
                             params.put("brandId", item.getBrandId() + "");
@@ -138,32 +139,39 @@ public class MenudetailActivity extends AppCompatActivity {
                             return params;
                         }
                     };
-
                     queue.add(request);
-
-
                 } else if (flag.equals("update")) {
 
                     item.setModelNumber(modelnm.getText().toString());
                     item.setName(itemnm.getText().toString());
                     item.setDiscountPrice(Integer.parseInt(itemprice.getText().toString()));
                     item.setAmount(Integer.parseInt(itemamount.getText().toString()));
+                    intent.putExtra("item", gson.toJson(item));
+                    setResult(RESULT_OK, intent);
                     StringRequest request = new StringRequest(Request.Method.POST, url + "/item/update",
                             //요청 성공 시
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
-                                    Log.d("result2", "[" + response + "]");
+                                    Log.e("result2", "[" + response + "]");
                                     int position = intent.getIntExtra("position", -1);
+                                    Log.e("position", position + "");
                                     try{
-                                        Item item = (Item) adapter.getItem(position);
+//                                        Log.d("adapter size", adapter.getCount()+"");
+//                                        Item item = (Item) adapter.getItem(position);
+//                                        Log.d("item hashcode", item.hashCode()+"");
 
-                                        item.setModelNumber(modelnm.getText().toString());
-                                        item.setName(itemnm.getText().toString());
-                                        item.setDiscountPrice(Integer.parseInt(itemprice.getText().toString()));
-                                        item.setAmount(Integer.parseInt(itemamount.getText().toString()));
+//                                        item.setModelNumber(modelnm.getText().toString());
+//                                        item.setName(itemnm.getText().toString());
+//                                        item.setDiscountPrice(Integer.parseInt(itemprice.getText().toString()));
+//                                        item.setAmount(Integer.parseInt(itemamount.getText().toString()));
+//                                        adapter.notifyDataSetChanged();
+                                        setResult(RESULT_OK, intent);
+                                        finish();
                                     }catch (Exception e){
-                                        Log.d("result2", "no position in intent");
+                                        e.printStackTrace();
+                                        Log.e("result2", "no position in intent");
+
                                     }
                                 }
                             },
@@ -171,40 +179,51 @@ public class MenudetailActivity extends AppCompatActivity {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    Log.d("error", "[" + error.getMessage() + "]");
+                                    Log.e("error2222", "[" + error.getMessage() + "]");
                                 }
                             }) {
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError {
                             Map<String, String> params = new HashMap<>();
                             params.put("modelNumber", modelnm.getText().toString());
+                            Log.e("null?",modelnm.getText().toString());
                             params.put("category", item.getCategory());
+                            Log.e("null?",item.getCategory());
+
                             params.put("price", item.getPrice() + "");
+                            Log.e("null?",item.getPrice()+"");
+
                             params.put("name", itemnm.getText().toString());
-                            params.put("discountPrice", itemprice.getText() + "");
-                            params.put("amount", itemamount.getText() + "");
+                            Log.e("null?",itemnm.getText().toString());
+
+                            params.put("discountPrice", itemprice.getText().toString());
+                            Log.e("null?",itemprice.getText().toString());
+
+                            params.put("amount", itemamount.getText().toString());
+
+                            Log.e("amout", itemamount.getText().toString());
                             params.put("information", item.getInformation());
-                            params.put("image", item.getImageUrl());
+                            Log.e("null?", item.getInformation());
+
+                            params.put("image", item.getImageUrl()+"");
+                            Log.e("null?", item.getImageUrl()+"");
+
                             params.put("brandId", item.getBrandId() + "");
+                            Log.e("null?", item.getBrandId() + "");
+
                             params.put("id", item.getId() + "");
-
-
-
-
-
-
-
+                            Log.e("ididid", item.getId()+"");
                             return params;
                         }
 
                     };
                     queue.add(request);
                 }
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("json", gson.toJson(item));
-                setResult(1, resultIntent);
-                finish();
 
+
+                startActivity(new Intent(getApplicationContext(), MnglistActivity.class));
+                adapter.notifyDataSetChanged();
+                finish();
             }
 
         });

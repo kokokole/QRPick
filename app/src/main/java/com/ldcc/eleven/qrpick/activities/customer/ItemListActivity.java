@@ -30,7 +30,7 @@ public class ItemListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_item_list);
 
         Intent intent = getIntent();
-        Toast.makeText(getApplicationContext(), "data : " + intent.getStringExtra("data"), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(), "data : " + intent.getStringExtra("data"), Toast.LENGTH_SHORT).show();
         // Intent로 넘겨받은 데이터를 가지고 매대에 있는 상품들을 리스트로 만들어 보여준다. (좌우 스크롤 리스트)
 
         PagerContainer mContainer = (PagerContainer) findViewById(R.id.pager_container);

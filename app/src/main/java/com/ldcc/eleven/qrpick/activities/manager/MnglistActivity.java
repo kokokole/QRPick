@@ -65,6 +65,7 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mnglist);
+        Log.e("Mng", "oncreate");
 
         Intent intent = getIntent();
 //        Toast.makeText(this, "" + intent.getStringExtra("data"), Toast.LENGTH_SHORT).show();
@@ -73,7 +74,8 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
         try{
             brandId = intent.getStringExtra("data");
         }catch(Exception e){
-            brandId = "23";
+            Log.e("qweee", "qweqweq");
+            brandId = "24";
         }
 //        brandId = "23";
 
@@ -140,6 +142,7 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
                         Intent intent = new Intent(getApplicationContext(), MenudetailActivity.class).putExtra("data", json);
                         intent.putExtra("position", position);
                         intent.putExtra("flag", "update");
+                        intent.putExtra("adapter", myAdapter);
                         startActivityForResult(intent, requestCode+1);
                         myAdapter.notifyDataSetChanged();
 
@@ -193,10 +196,9 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
             public void onClick(View view) {
                 /**페이지 작성되면 수정*/
                 // TODO 등록버튼
+
                 startActivityForResult(new Intent(getApplicationContext(), ManagerActivity.class).putExtra("go", 1).putExtra("adapter", myAdapter), requestCode);
-                // TODO MenudatailActivity를 바로 띄우는 걸로 수정해보자.
-                // TODO MenudatailActivity에 QR코드 인식 후 데이터 가져오게 해보자
-                // TODO 데이터 가져와서 adapter와 연동하기
+
 
 
             }
@@ -215,9 +217,15 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
 
         // TODO 클릭해도 수정 페이지가 열리게
         Item item = (Item) myAdapter.getItem(position);
+        Log.d("item hashcode", item.hashCode()+"");
         Gson gson = new Gson();
         String json = gson.toJson(item);
         Intent intent = new Intent(getApplicationContext(), MenudetailActivity.class).putExtra("data", json);
+        intent.putExtra("position", position);
+        Log.d("adapter size", myAdapter.getCount()+"");
+
+        intent.putExtra("adapter", myAdapter);
+
         intent.putExtra("flag", "update");
         startActivityForResult(intent, requestCode+1);
         myAdapter.notifyDataSetChanged();
@@ -314,21 +322,28 @@ public class MnglistActivity extends AppCompatActivity implements AdapterView.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-//        if(this.requestCode == requestCode){
-//            Log.d("request", "0");
-//            if(data.getStringExtra("json") != null){
-//                Log.d("request", "0  ifif");
+        items= new ArrayList<>();
+        myAdapter = new MyAdapter(getApplicationContext(), items);
+        swipelist.setAdapter(myAdapter);
+        initData("24");
+        myAdapter.notifyDataSetChanged();
+        Log.e("Mng", "result");
+//        Log.e("adapter size", myAdapter.getCount() + "");
 //
-//                Gson gson = new Gson();
-//                String json = data.getStringExtra("data");
-//                Item item = gson.fromJson(json, Item.class);
-//                items.add(item);
-//                myAdapter.notifyDataSetChanged();
-//            }
-//        }else if(this.requestCode == requestCode+1){
+//        myAdapter.notifyDataSetChanged();
+//        try {
+//            String itemString = data.getStringExtra("item");
 //
+//            Gson gson = new Gson();
+//            Item itemData = gson.fromJson(itemString, Item.class);
+//            items.add(itemData);
+//            myAdapter.notifyDataSetChanged();
+//        } catch (Exception e) {
+//            e.printStackTrace();
 //        }
+
+
+
 
     }
 }

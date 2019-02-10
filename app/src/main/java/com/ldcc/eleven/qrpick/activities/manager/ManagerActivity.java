@@ -211,27 +211,35 @@ public class ManagerActivity extends AppCompatActivity implements dataSetListene
 
         // TODO 여기 수정해보자
         qrData = data;
+
         if(go == 0) {
             startActivity(new Intent(getApplicationContext(), MnglistActivity.class).putExtra("data", qrData));
+            result = qrData;
             finish();
         }
         else{  // 등록버튼을 눌렀을 때
-            Log.d("create", qrData);
-            Intent intent = new Intent(getApplicationContext(), MenudetailActivity.class).putExtra("data", qrData).putExtra("adapter",mIntent.getParcelableExtra("adapter"));
-
+            Log.e("create", qrData);
+            Log.e("adapter size",((MyAdapter)mIntent.getParcelableExtra("adapter")).getCount()+"");
+            Intent intent = new Intent(getApplicationContext(), MenudetailActivity.class).putExtra("qr", result).putExtra("data", qrData).putExtra("adapter",mIntent.getParcelableExtra("adapter"));
+            MyAdapter adapter = ((MyAdapter)mIntent.getParcelableExtra("adapter"));
+            Gson gson = new Gson();
+            Item item = gson.fromJson(qrData, Item.class);
+            Log.e("detail", item.toString());
+            adapter.add(item);
+            adapter.notifyDataSetChanged();
             intent.putExtra("flag", "create");
             startActivityForResult(intent, 0);
-            finish();
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 0){
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("json", data.getStringExtra("json"));
-            setResult(0, resultIntent);
-        }
+        MyAdapter myAdapter =((MyAdapter)mIntent.getParcelableExtra("adapter"));
+        Log.e("adapter size Manager", myAdapter.getCount() + "");
+
+        myAdapter.notifyDataSetChanged();
+        finish();
+
     }
 }

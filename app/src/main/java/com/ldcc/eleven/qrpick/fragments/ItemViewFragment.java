@@ -1,20 +1,26 @@
 package com.ldcc.eleven.qrpick.fragments;
 
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.ldcc.eleven.qrpick.R;
-import com.ldcc.eleven.qrpick.util.vo.Information;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,9 +47,14 @@ public class ItemViewFragment extends Fragment {
         this.price = args.getString("price");
         this.id = args.getString("id");
         Gson gson = new Gson();
-        information = information.replaceAll("\\\"", "");
+//        information = information.replaceAll("\\\"", "");
         Log.d("ItemViewFragment", information);
 
+    }
+    private Drawable resize(Drawable image) {
+        Bitmap b = ((BitmapDrawable)image).getBitmap();
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 200, 200, false);
+        return new BitmapDrawable(getResources(), bitmapResized);
     }
     final static String TAG = "ItemViewFragment";
     @Override
@@ -57,8 +68,11 @@ public class ItemViewFragment extends Fragment {
         TextView nameView = rootView.findViewById(R.id.textileView);
         TextView priceView = rootView.findViewById(R.id.textView11);
         TextView colorView = rootView.findViewById(R.id.colorView);
-        TextView textileView = rootView.findViewById(R.id.textileView);
+        TextView textileView = rootView.findViewById(R.id.textileView2);
+        Button button = rootView.findViewById(R.id.button3);
 
+        FloatingActionButton f =rootView.findViewById(R.id.fab);
+//        f.setOnClickListener(new View);
 
         if(modelNumber==null){
             Log.d("ItemViewFragment", "null");
@@ -71,18 +85,45 @@ public class ItemViewFragment extends Fragment {
         }
         else{
             Log.d("ItemViewFragment", "not null");
-            Glide.with(getActivity().getApplicationContext()).load(imageUrl).into(mainImageView);
+            if(imageUrl == null || imageUrl.equals("") ){
+                Log.e("image", "imageeeee");
+                if(modelNumber.equals("7218410082")){
+                    mainImageView.setImageDrawable(resize(getResources().getDrawable(R.drawable.a7218410082)));
+                } else if (modelNumber.equals("OW9SJ150")) {
+                    mainImageView.setImageDrawable(resize(getResources().getDrawable(R.drawable.ow9sj150)));
+
+                } else if (modelNumber.equals("MABLHGLDJ510121E23")) {
+                    mainImageView.setImageDrawable(resize(getResources().getDrawable(R.drawable.mam)));
+                } else if (modelNumber.equals("HSSW8D753")) {
+                    mainImageView.setImageDrawable(resize(getResources().getDrawable(R.drawable.hssw8b753)));
+                }
+            }else{
+                Glide.with(getActivity().getApplicationContext()).load(imageUrl).into(mainImageView);
+            }
             Log.d(TAG, modelNumber);
             Log.d(TAG, discountPrice);
             Log.d(TAG, name);
 
+            brandNameView.setText(category);
             modelNumberView.setText(modelNumber);
             priceView.setText(discountPrice);
             nameView.setText(name);
             Gson gson = new Gson();
-            Information info = gson.fromJson(information, Information.class);
-            colorView.setText(info.getColor());
-            textileView.setText(info.getTextile());
+            Log.d("information@@", information);
+//            Information info = gson.fromJson(information, Information.class);
+            JSONObject info = null;
+            try {
+                info = new JSONObject(information);
+                Log.d("ASDAS",info.getString("color"));
+                Log.d("ASDAS",info.getString("textile"));
+                colorView.setText(info.getString("color"));
+                textileView.setText(info.getString("textile"));
+                button.setText(info.getString("size"));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
 
 
         }

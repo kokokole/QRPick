@@ -1,8 +1,12 @@
 package com.ldcc.eleven.qrpick.util.vo;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class Item {
+public class Item implements Parcelable, Serializable {
     private String modelNumber, category, name;
     private int price, discountPrice, amount, brandId, id;
 //    private List<information> information;
@@ -118,5 +122,51 @@ private String information;
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
+        parcel.writeString(modelNumber);
+        parcel.writeString(category);
+        parcel.writeString(name);
+        parcel.writeString(information);
+        parcel.writeInt(price);
+        parcel.writeInt(discountPrice);
+        parcel.writeInt(amount);
+        parcel.writeInt(brandId);
+        parcel.writeInt(id);
+
+    }
+
+    public Item(Parcel src){
+        this.modelNumber = src.readString();
+        this.category= src.readString();
+        this.name= src.readString();
+        this.information= src.readString();
+        this.price= src.readInt();
+        this.discountPrice= src.readInt();
+        this.amount= src.readInt();
+        this.brandId= src.readInt();
+        this.id= src.readInt();
+
+    }
+
+    public static final Creator CREATOR = new Creator() {
+        @Override
+        public Object createFromParcel(Parcel parcel) {
+            return new Item(parcel);
+        }
+
+        @Override
+        public Object[] newArray(int i) {
+            return new Item[i];
+        }
+    };
 }
 
